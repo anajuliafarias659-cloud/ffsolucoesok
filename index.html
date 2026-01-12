@@ -2,131 +2,73 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>FFCINE – Teste</title>
+<title>FFCINE • Bar Mode</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{
-  background:#0f0f0f;
-  color:#fff;
-  font-family:Arial,Helvetica,sans-serif;
-}
-
-/* LOGO TOPO */
-#logoTop{
-  text-align:center;
-  font-size:28px;
-  color:#e50914;
-  font-weight:bold;
-  padding:12px 0;
   background:#000;
+  overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
 }
 
 /* PLAYER */
 .player{
-  width:100%;
-  height:55vh;
-  background:#000;
-  position:relative;
-}
-
-/* FULLSCREEN FAKE */
-.player.fullscreen{
   position:fixed;
   inset:0;
-  width:100vw;
-  height:100vh;
-  z-index:9999;
+  background:#000;
 }
 
-/* LOGO NO FILME */
-#logoOverlay{
+/* LOGO */
+#logo{
   position:absolute;
   bottom:20px;
   left:20px;
-  width:90px;
-  opacity:0.45;
+  width:100px;
+  opacity:.45;
   z-index:10;
   pointer-events:none;
-  display:none;
 }
 
-/* PLAYER VIDEO */
-#mainPlayer{
+/* IFRAME */
+iframe{
   width:100%;
   height:100%;
   border:none;
-  display:none;
-}
-
-/* GALERIA */
-.gallery{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
-  gap:14px;
-  padding:15px;
-}
-.movie{cursor:pointer}
-.movie img{
-  width:100%;
-  aspect-ratio:2/3;
-  object-fit:cover;
-  border-radius:12px;
-}
-.movie-title{
-  font-size:13px;
-  margin-top:6px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="logoTop">FFCINE</div>
-
-<div class="player" id="player">
-  <img id="logoOverlay" src="img/logo.png" alt="FFCINE">
-  <iframe id="mainPlayer" allow="autoplay; playsinline"></iframe>
-</div>
-
-<div class="gallery">
-
-  <div class="movie" onclick="playMovie('eecbS-qCZXc')">
-    <img src="https://img.youtube.com/vi/eecbS-qCZXc/hqdefault.jpg">
-    <div class="movie-title">O Lobo</div>
-  </div>
-
-  <div class="movie" onclick="playMovie('HJoIri7KxMs')">
-    <img src="https://img.youtube.com/vi/HJoIri7KxMs/hqdefault.jpg">
-    <div class="movie-title">Carga Explosiva 3</div>
-  </div>
-
-  <div class="movie" onclick="playMovie('ISgmlhSJopU')">
-    <img src="https://img.youtube.com/vi/ISgmlhSJopU/hqdefault.jpg">
-    <div class="movie-title">XIII – A Conspiração</div>
-  </div>
-
-  <div class="movie" onclick="playMovie('P_dPk_z3_v8')">
-    <img src="https://img.youtube.com/vi/P_dPk_z3_v8/hqdefault.jpg">
-    <div class="movie-title">Rambo – Programado Para Matar</div>
-  </div>
-
+<div class="player">
+  <!-- troca o src da logo se quiser -->
+  <img id="logo" src="img/logo.png" alt="FFCINE">
+  <iframe id="player"></iframe>
 </div>
 
 <script>
-function playMovie(id){
-  const player=document.getElementById('player');
-  const iframe=document.getElementById('mainPlayer');
+// 🎞️ FILMES (IDs do YouTube)
+const filmes = [
+  "eecbS-qCZXc", // O Lobo
+  "HJoIri7KxMs", // Carga Explosiva 3
+  "ISgmlhSJopU", // XIII
+  "P_dPk_z3_v8"  // Rambo
+];
 
-  player.classList.add('fullscreen');
-  iframe.style.display='block';
+let atual = 0;
+const tempoTroca = 20 * 60 * 1000; // 20 minutos
 
-  document.getElementById('logoOverlay').style.display='block';
-  document.getElementById('logoTop').style.display='none';
-
-  iframe.src=`https://www.youtube.com/embed/${id}?autoplay=1&playsinline=1&controls=1`;
+function tocar(){
+  const iframe = document.getElementById("player");
+  iframe.src = `https://www.youtube.com/embed/${filmes[atual]}?autoplay=1&mute=1&controls=0&rel=0&playsinline=1`;
+  atual = (atual + 1) % filmes.length;
 }
+
+// inicia sozinho
+tocar();
+setInterval(tocar, tempoTroca);
 </script>
 
 </body>
