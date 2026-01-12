@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>FFcine</title>
+<title>FFCINE</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -28,7 +28,7 @@ body{
   z-index: 100;
 }
 
-/* LOGO OVERLAY (SÓ NO PLAYER) */
+/* LOGO OVERLAY */
 #logoOverlay{
   position: fixed;
   bottom: 20px;
@@ -114,21 +114,17 @@ body{
 
 <body>
 
-<!-- LOGO OVERLAY -->
 <img id="logoOverlay" src="img/logo.png" alt="FFCINE">
 
-<!-- LOGO TOPO -->
 <div id="logoTop">FFCINE</div>
 
-<!-- PLAYER -->
 <div class="player">
   <iframe id="mainPlayer" allow="autoplay; fullscreen" allowfullscreen></iframe>
   <div id="playerGrid"></div>
 </div>
 
-<!-- BUSCA -->
 <div style="max-width:900px; margin:15px auto; padding:0 10px;">
-  <input id="searchInput" placeholder="Buscar no YouTube"
+  <input id="searchInput" placeholder="Buscar no catálogo"
     style="width:100%; padding:10px; border-radius:6px; border:none;">
   <button onclick="buscar()"
     style="margin-top:6px; padding:8px 14px; background:#e50914; color:#fff; border:none; border-radius:6px;">
@@ -136,273 +132,33 @@ body{
   </button>
 </div>
 
-<!-- GALERIA (EXEMPLO) -->
 <div class="gallery">
   <div class="movie" onclick="playMovie('eecbS-qCZXc')">
     <img src="https://img.youtube.com/vi/eecbS-qCZXc/hqdefault.jpg">
     <div class="movie-title">O Lobo</div>
   </div>
 
-<div class="movie acao" data-genero="acao" onclick="playMovie('HJoIri7KxMs')">
-  <img src="https://img.youtube.com/vi/HJoIri7KxMs/hqdefault.jpg">
-  <div class="movie-title">CARGA EXPLOSIVA 3</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('ISgmlhSJopU')">
-      <img src="https://img.youtube.com/vi/ISgmlhSJopU/hqdefault.jpg">
-      <div class="movie-title">XIII - A Conspiração</div>
-    </div>
-
-    <div class="movie comedia" data-genero="comedia" onclick="playMovie('aagGsNT_ly8')">
-      <img src="https://img.youtube.com/vi/aagGsNT_ly8/hqdefault.jpg">
-      <div class="movie-title">Meu Novo Brinquedo</div>
-    </div>
-
-    <div class="movie ficcao" data-genero="ficcao" onclick="playMovie('_J-tObfmlQA')">
-      <img src="https://img.youtube.com/vi/_J-tObfmlQA/hqdefault.jpg">
-      <div class="movie-title">Super-Herói</div>
-    </div>
-
-    <div class="movie aventura" data-genero="aventura" onclick="playMovie('T1RYmydSTAw')">
-      <img src="https://img.youtube.com/vi/T1RYmydSTAw/hqdefault.jpg">
-      <div class="movie-title">Viagem ao Vale Mágico</div>
-    </div>
-
-<div class="movie ficcao" data-genero="ficcao" onclick="playMovie('Uao7P_-s4vw')">
-  <img src="https://img.youtube.com/vi/Uao7P_-s4vw/hqdefault.jpg">
-  <div class="movie-title">Tin Man - A Nova Geração de Oz</div>
-</div>
-
-<div class="movie ficcao" data-genero="ficcao" onclick="playMovie('G-JhdcOvigU')">
-  <img src="https://img.youtube.com/vi/G-JhdcOvigU/hqdefault.jpg">
-  <div class="movie-title">Ele tem o dom de ver as almas das pessoas que já partiram</div>
-</div>
-
-<div class="movie acao" data-genero="acao" onclick="playMovie('m_93R-lrdDU')">
-  <img src="https://img.youtube.com/vi/m_93R-lrdDU/hqdefault.jpg">
-  <div class="movie-title">Um juiz implacável destrói criminosos em uma cidade futurista</div>
-</div>
-
-<div class="movie acao" data-genero="acao" onclick="playMovie('2UvJvKD006g')">
-  <img src="https://img.youtube.com/vi/2UvJvKD006g/hqdefault.jpg">
-  <div class="movie-title">Criada Para Matar - Filme Completo Dublado</div>
-</div>
-<div class="movie ficcao" data-genero="ficcao" onclick="playMovie('YI54mbpB8Pg')">
-  <img src="https://img.youtube.com/vi/YI54mbpB8Pg/hqdefault.jpg">
-  <div class="movie-title">Os heróis retornaram das sombras para salvar o mundo</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('FVubB9NBG2I')">
-  <img src="https://img.youtube.com/vi/FVubB9NBG2I/hqdefault.jpg">
-  <div class="movie-title">Bem Vindo à Selva (2013) · Dublado Português</div>
-</div>
-
-<div class="movie comedia" data-genero="comedia" onclick="playMovie('HXBoJAkOVDE')">
-  <img src="https://img.youtube.com/vi/HXBoJAkOVDE/hqdefault.jpg">
-  <div class="movie-title">O Primeiro dia Sobre a verdade</div>
-</div>
-<div class="movie drama" data-genero="drama" onclick="playMovie('SOql_5vBf50')">
-  <img src="https://img.youtube.com/vi/SOql_5vBf50/hqdefault.jpg">
-  <div class="movie-title">Em busca do Paraiso</div>
-</div>
-<div class="movie drama" data-genero="drama" onclick="playMovie('Lc5tvT4xMlg')">
-  <img src="https://img.youtube.com/vi/Lc5tvT4xMlg/hqdefault.jpg">
-  <div class="movie-title">Godsend | Completo Dublado</div>
-</div>
-<div class="movie ficcao" data-genero="ficcao" onclick="playMovie('PfLvGyjXQyw')">
-  <img src="https://img.youtube.com/vi/PfLvGyjXQyw/hqdefault.jpg">
-  <div class="movie-title">Simbár e o Minotauro</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('pBapv3hoHWQ')">
-  <img src="https://img.youtube.com/vi/pBapv3hoHWQ/hqdefault.jpg">
-  <div class="movie-title">A Caçadora Das Runas | Filme Completo | Ação</div>
-</div>
-<div class="movie ficcao" data-genero="ficcao" onclick="playMovie('tvX2QnS0_jA')">
-  <img src="https://img.youtube.com/vi/tvX2QnS0_jA/hqdefault.jpg">
-  <div class="movie-title">Filme Anjos da Noite - Completo e Dublado</div>
-</div>
-<div class="movie ficcao" data-genero="ficcao" onclick="playMovie('ClrpeAr7-mk')">
-  <img src="https://img.youtube.com/vi/ClrpeAr7-mk/hqdefault.jpg">
-  <div class="movie-title">A múmia revive para cumprir uma profecia apocalíptica</div>
-</div>
-<div class="movie ficcao" data-genero="ficcao" onclick="playMovie('xh31le5hMxM')">
-  <img src="https://img.youtube.com/vi/xh31le5hMxM/hqdefault.jpg">
-  <div class="movie-title">Um grande guerreiro desafiou os deuses</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('A96zYXL2BPw')">
-  <img src="https://img.youtube.com/vi/A96zYXL2BPw/hqdefault.jpg">
-  <div class="movie-title">Werewolf Castle / Aventura, Acao</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('P_dPk_z3_v8')">
-  <img src="https://img.youtube.com/vi/P_dPk_z3_v8/hqdefault.jpg">
-  <div class="movie-title">Rambo Programado Para Matar (1982)</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('9qgrxpyX46E')">
-  <img src="https://img.youtube.com/vi/9qgrxpyX46E/hqdefault.jpg">
-  <div class="movie-title">Forças especiais de elite buscam vingança</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('iuPkoDN6X7Y')">
-  <img src="https://img.youtube.com/vi/iuPkoDN6X7Y/hqdefault.jpg">
-  <div class="movie-title">PARKER) FILME DE AÇÃO</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('GJyAjVlWAlM')">
-  <img src="https://img.youtube.com/vi/GJyAjVlWAlM/hqdefault.jpg">
-  <div class="movie-title">Se você gosta de ação intensa</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('dhHuXirYH3w')">
-  <img src="https://img.youtube.com/vi/dhHuXirYH3w/hqdefault.jpg">
-  <div class="movie-title">Rota de Fuga 3 - O Resgate (2019) · Dublado Português</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('TqphxrFBZDc')">
-  <img src="https://img.youtube.com/vi/TqphxrFBZDc/hqdefault.jpg">
-  <div class="movie-title">Golpe de Risco (2017) | Filme de Ação</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('YsxJthiboS8')">
-  <img src="https://img.youtube.com/vi/YsxJthiboS8/hqdefault.jpg">
-  <div class="movie-title">Nicolas Cage! | Filmes Completos</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('P_ZljUL4MnQ')">
-  <img src="https://img.youtube.com/vi/P_ZljUL4MnQ/hqdefault.jpg">
-  <div class="movie-title">O Bunker Projeto 12</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('4Ggu15Ff4uY')">
-  <img src="https://img.youtube.com/vi/4Ggu15Ff4uY/hqdefault.jpg">
-  <div class="movie-title">A prisão fica isolada do mundo</div>
-</div>
-
-<div class="movie acao" data-genero="acao" onclick="playMovie('_PQ0QSPleMo')">
-  <img src="https://img.youtube.com/vi/_PQ0QSPleMo/hqdefault.jpg">
-  <div class="movie-title">Os Terroristas capturaram o Espião, sem saber que os Soldados já os tinham Cercado.</div>
-</div>
-<div class="movie ficcao" data-genero="ficcao" onclick="playMovie('c836H1JbsOg')">
-  <img src="https://img.youtube.com/vi/c836H1JbsOg/hqdefault.jpg">
-  <div class="movie-title">Morto Por Criminosos, Ele Renasce Com Instintos Selvagens E Sede De Justiça</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('Qepso0WZ7hE')">
-  <img src="https://img.youtube.com/vi/Qepso0WZ7hE/hqdefault.jpg">
-  <div class="movie-title">Ex-espião Retorna Para Se Vingar Dos Traidores!</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('QC6Y8gAKApc')">
-  <img src="https://img.youtube.com/vi/QC6Y8gAKApc/hqdefault.jpg">
-  <div class="movie-title">Lute Por Sua Vida 🗡️ | SYLVESTER STALLONE</div>
-</div>
-
-<div class="movie acao" data-genero="acao" onclick="playMovie('8OKHHBh6Wf0')">
-  <img src="https://img.youtube.com/vi/8OKHHBh6Wf0/hqdefault.jpg">
-  <div class="movie-title">Ele fugiu da prisão para vingar o irmão! | Filme Completo de Ação e Crime 2024</div>
-</div>
-
-<div class="movie acao" data-genero="acao" onclick="playMovie('PpqqAgoy6qg')">
-  <img src="https://img.youtube.com/vi/PpqqAgoy6qg/hqdefault.jpg">
-  <div class="movie-title">Ação, aventura vai te prender do início ao fim</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('OQA_gw8ScsU')">
-  <img src="https://img.youtube.com/vi/OQA_gw8ScsU/hqdefault.jpg">
-  <div class="movie-title">Blitz - Filme Completo Dublado</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('LN6nH9JlYMA')">
-  <img src="https://img.youtube.com/vi/LN6nH9JlYMA/hqdefault.jpg">
-  <div class="movie-title">Filme De Ação 2024 Filme Completo Dublado</div>
-</div>
-
-<div class="movie ficcao" data-genero="ficcao" onclick="playMovie('zVzH9u_Q1mU')">
-  <img src="https://img.youtube.com/vi/zVzH9u_Q1mU/hqdefault.jpg">
-  <div class="movie-title">O Melhor Filme de Aventura 4K | Ele partiu para terras proibidas</div>
-</div>
-<div class="movie ficcao" data-genero="ficcao" onclick="playMovie('S2uBq-K6Ymw')">
-  <img src="https://img.youtube.com/vi/S2uBq-K6Ymw/hqdefault.jpg">
-  <div class="movie-title">Filme De Ação 2023 Filme Completo Dublado</div>
-</div>
-<div class="movie ficcao" data-genero="ficcao" onclick="playMovie('mLtDkwqG-3s')">
-  <img src="https://img.youtube.com/vi/mLtDkwqG-3s/hqdefault.jpg">
-  <div class="movie-title">Eles despertaram do gelo para salvar um mundo em ruínas</div>
-</div>
-<div class="movie ficcao" data-genero="ficcao" onclick="playMovie('gEeXQ-yW_7s')">
-  <img src="https://img.youtube.com/vi/gEeXQ-yW_7s/hqdefault.jpg">
-  <div class="movie-title">O Homem-Aranha: Aventura Completa</div>
-</div>
-
-
-<div class="movie ficcao" data-genero="ficcao" onclick="playMovie('N4rwRHd78GY')">
-  <img src="https://img.youtube.com/vi/N4rwRHd78GY/hqdefault.jpg">
-  <div class="movie-title">Um Colégio Muito Maluco</div>
-</div>
-<div class="movie comedia" data-genero="comedia" onclick="playMovie('RZrbFXW2aZk')">
-  <img src="https://img.youtube.com/vi/RZrbFXW2aZk/hqdefault.jpg">
-  <div class="movie-title">FILME DE COMÉDIA LANÇAMENTO 2021 FILMES</div>
-</div>
-
-<div class="movie comedia" data-genero="comedia" onclick="playMovie('OpNhMO-_Ak4')">
-  <img src="https://img.youtube.com/vi/OpNhMO-_Ak4/hqdefault.jpg">
-  <div class="movie-title">Táxi 4 | FILME COMPLETO |</div>
-</div>
-
-<div class="movie acao" data-genero="acao" onclick="playMovie('Tqn3rJQNijc')">
-  <img src="https://img.youtube.com/vi/Tqn3rJQNijc/hqdefault.jpg">
-  <div class="movie-title">November Man: Um Espião Nunca Morre (2014)</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('TgMuCz43WOY')">
-  <img src="https://img.youtube.com/vi/TgMuCz43WOY/hqdefault.jpg">
-  <div class="movie-title">A Fuga (1994) - Filme Completo Dublado</div>
-</div>
-<div class="movie ficcao" data-genero="ficcao" onclick="playMovie('pbL8v0ZdcgQ')">
-  <img src="https://img.youtube.com/vi/pbL8v0ZdcgQ/hqdefault.jpg">
-  <div class="movie-title">O Retorno do Dragão - A Cidade Perdida (2011)</div>
-</div>
-
-<div class="movie drama" data-genero="drama" onclick="playMovie('_xxOd2sDxHk')">
-  <img src="https://img.youtube.com/vi/_xxOd2sDxHk/hqdefault.jpg">
-  <div class="movie-title">Veículo 19 (2013) · Dublado Português</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('6LeDbt4Ld_4')">
-  <img src="https://img.youtube.com/vi/6LeDbt4Ld_4/hqdefault.jpg">
-  <div class="movie-title">Lobo Guerreiro 2</div>
-</div>
-<div class="movie ficcao" data-genero="ficcao" onclick="playMovie('iS_omzHx4gg')">
-  <img src="https://img.youtube.com/vi/iS_omzHx4gg/hqdefault.jpg">
-  <div class="movie-title">O Último Caçador de Bruxas</div>
-</div>
-<div class="movie acao" data-genero="acao" onclick="playMovie('yQYts9ekPjw')">
-  <img src="https://img.youtube.com/vi/yQYts9ekPjw/hqdefault.jpg">
-  <div class="movie-title">Boyka: O Imbatível)🎬 Ação (HD)</div>
-</div>
-<div class="movie drama" data-genero="drama" onclick="playMovie('SVJBlZh3PjU')">
-  <img src="https://img.youtube.com/vi/SVJBlZh3PjU/hqdefault.jpg">
-  <div class="movie-title">Sisu - Uma História de Determinação</div>
-</div>
-    <div class="movie familia" data-genero="familia" onclick="playMovie('IEGQUAyHZJc')">
-      <img src="https://img.youtube.com/vi/IEGQUAyHZJc/hqdefault.jpg">
-      <div class="movie-title">Uma Criança na Corte do Rei Arthur</div>
-    </div>
-
-  <div class="movie" onclick="playMovie('ISgmlhSJopU')">
-    <img src="https://img.youtube.com/vi/ISgmlhSJopU/hqdefault.jpg">
-    <div class="movie-title">XIII - A Conspiração</div>
+  <div class="movie" onclick="playMovie('HJoIri7KxMs')">
+    <img src="https://img.youtube.com/vi/HJoIri7KxMs/hqdefault.jpg">
+    <div class="movie-title">Carga Explosiva 3</div>
   </div>
 </div>
 
 <script>
 const slides=[
- "https://img.youtube.com/vi/eecbS-qCZXc/maxresdefault.jpg",
- "https://img.youtube.com/vi/ISgmlhSJopU/maxresdefault.jpg",
-"https://img.youtube.com/vi/HJoIri7KxMs/hqdefault.jpg",
-  "https://img.youtube.com/vi/RXz9mJkA52Q/maxresdefault.jpg",
   "https://img.youtube.com/vi/eecbS-qCZXc/maxresdefault.jpg",
   "https://img.youtube.com/vi/ISgmlhSJopU/maxresdefault.jpg",
+  "https://img.youtube.com/vi/HJoIri7KxMs/hqdefault.jpg",
   "https://img.youtube.com/vi/_J-tObfmlQA/maxresdefault.jpg",
   "https://img.youtube.com/vi/P_dPk_z3_v8/maxresdefault.jpg",
-  "https://img.youtube.com/vi/_xxOd2sDxHk/maxresdefault.jpg",
-  "https://img.youtube.com/vi/IEGQUAyHZJc/maxresdefault.jpg",
-  "https://img.youtube.com/vi/RXz9mJkA52Q/maxresdefault.jpg",
-  "https://img.youtube.com/vi/SVJBlZh3PjU/maxresdefault.jpg",
-  "https://img.youtube.com/vi/yQYts9ekPjw/maxresdefault.jpg",
-  "https://img.youtube.com/vi/6LeDbt4Ld_4/maxresdefault.jpg",
-  "https://img.youtube.com/vi/SVJBlZh3PjU/hqdefault.jpg",
-  "https://img.youtube.com/vi/6LeDbt4Ld_4/hqdefault.jpg",
+  "https://img.youtube.com/vi/_xxOd2sDxHk/maxresdefault.jpg"
 ];
 
 let started=false;
 
 function startSlides(){
   const grid=document.getElementById('playerGrid');
+
   function update(){
     if(started) return;
     grid.innerHTML='';
@@ -415,6 +171,7 @@ function startSlides(){
       grid.appendChild(c);
     }
   }
+
   update();
   setInterval(update,4000);
 }
@@ -428,18 +185,7 @@ function playMovie(id){
   const iframe=document.getElementById('mainPlayer');
   iframe.style.display='block';
   iframe.src=`https://www.youtube.com/embed/${id}?autoplay=1&playsinline=1`;
-
-  if(iframe.requestFullscreen){
-    iframe.requestFullscreen().catch(()=>{});
-  }
 }
-
-document.addEventListener('fullscreenchange',()=>{
-  if(!document.fullscreenElement){
-    document.getElementById('logoOverlay').style.display='none';
-    document.getElementById('logoTop').style.display='block';
-  }
-});
 
 function buscar(){
   const q=document.getElementById('searchInput').value.toLowerCase();
@@ -453,4 +199,3 @@ startSlides();
 
 </body>
 </html>
-
