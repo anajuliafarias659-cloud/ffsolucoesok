@@ -13,23 +13,26 @@ body{
   font-family:Arial,Helvetica,sans-serif;
 }
 
-/* TOPO - 2 BANNERS */
+/* TOPO – IGUAL LATERAL */
 .top-images{
-  height:260px;
+  height:180px;
+  background:#fff;
+  padding:10px;
   display:grid;
-  grid-template-columns:1fr 1fr;
-  background:#000;
+  grid-template-columns:repeat(6,1fr);
+  gap:10px;
 }
 .top-images img{
   width:100%;
-  height:100%;
+  aspect-ratio:1/1;
   object-fit:cover;
+  border-radius:8px;
 }
 
 /* LAYOUT */
 .container{
   display:flex;
-  height:calc(100vh - 260px);
+  height:calc(100vh - 180px);
 }
 
 /* MENU */
@@ -69,7 +72,7 @@ canvas{
   background:#000;
 }
 
-/* LATERAL IMAGENS */
+/* LATERAL */
 .lateral{
   width:200px;
   background:#fff;
@@ -90,10 +93,7 @@ canvas{
 <body>
 
 <!-- TOPO -->
-<div class="top-images">
-  <img id="top1">
-  <img id="top2">
-</div>
+<div class="top-images" id="topImages"></div>
 
 <div class="container">
 
@@ -169,23 +169,28 @@ function tocar(){
   };
 }
 
-/* ===== IMAGENS (2 TOPO + RESTO LATERAL) ===== */
-const top1 = document.getElementById("top1");
-const top2 = document.getElementById("top2");
-const lateralImgs = document.getElementById("lateralImgs");
+/* ===== IMAGENS ===== */
 const imgs = document.getElementById("imgs");
+const topImages = document.getElementById("topImages");
+const lateralImgs = document.getElementById("lateralImgs");
 
 imgs.onchange = ()=>{
+  topImages.innerHTML = "";
   lateralImgs.innerHTML = "";
 
   const files = [...imgs.files];
 
-  if(files[0]) top1.src = URL.createObjectURL(files[0]);
-  if(files[1]) top2.src = URL.createObjectURL(files[1]);
-
-  files.slice(2).forEach(f=>{
+  // TOPO – 6 imagens
+  files.slice(0,6).forEach(file=>{
     const img = document.createElement("img");
-    img.src = URL.createObjectURL(f);
+    img.src = URL.createObjectURL(file);
+    topImages.appendChild(img);
+  });
+
+  // LATERAL – 5 imagens
+  files.slice(6,11).forEach(file=>{
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
     lateralImgs.appendChild(img);
   });
 };
