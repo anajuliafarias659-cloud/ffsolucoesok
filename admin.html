@@ -12,6 +12,7 @@ body{
   font-family:Arial,Helvetica,sans-serif;
   padding:20px;
 }
+h2{margin-bottom:10px}
 label{display:block;margin-top:15px}
 input{
   width:100%;
@@ -42,17 +43,20 @@ button{
   object-fit:cover;
   border-radius:6px;
 }
+small{opacity:.7}
 </style>
 </head>
 
 <body>
 
-<h2>Admin • Vitrine FF Bar</h2>
+<h2>🎛️ Admin • Vitrine FF Bar</h2>
 
-<label>ID do YouTube (playlist, música ou filme)</label>
-<input id="youtubeId" placeholder="Ex: PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI">
+<label>Link ou ID do YouTube</label>
+<input id="youtubeInput" placeholder="cole o link ou só o ID">
 
-<label>Imagens da lateral (até 5)</label>
+<small>pode colar link completo ou só o ID</small>
+
+<label>Imagens da vitrine (até 5)</label>
 <input type="file" id="imgs" accept="image/*" multiple>
 
 <div class="preview" id="preview"></div>
@@ -63,7 +67,8 @@ button{
 let imagensBase64 = [];
 const preview = document.getElementById("preview");
 
-imgs.onchange = ()=>{
+// upload imagens
+imgs.onchange = () => {
   imagensBase64 = [];
   preview.innerHTML = "";
 
@@ -79,19 +84,29 @@ imgs.onchange = ()=>{
   });
 };
 
+// extrai ID do link se necessário
+function extrairID(valor){
+  if(valor.includes("youtube.com") || valor.includes("youtu.be")){
+    const url = new URL(valor);
+    return url.searchParams.get("v") || valor.split("/").pop();
+  }
+  return valor;
+}
+
 function salvar(){
-  if(!youtubeId.value.trim()){
-    alert("Cola o ID do YouTube");
+  const bruto = youtubeInput.value.trim();
+  if(!bruto){
+    alert("Cole o link ou ID do YouTube");
     return;
   }
 
   const dados = {
-    id: youtubeId.value.trim(),
+    id: extrairID(bruto),
     imagens: imagensBase64
   };
 
   localStorage.setItem("ffConfig", JSON.stringify(dados));
-  alert("Salvo! Atualiza a vitrine.");
+  alert("Salvo! Atualize a vitrine.");
 }
 </script>
 
