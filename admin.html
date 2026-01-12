@@ -2,111 +2,109 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Admin • FF Bar</title>
+<title>FF Bar • Player Local</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
-  background:#111;
-  color:#fff;
+  margin:0;
+  background:#000;
   font-family:Arial,Helvetica,sans-serif;
-  padding:20px;
 }
-h2{margin-bottom:10px}
-label{display:block;margin-top:15px}
-input{
-  width:100%;
-  padding:12px;
-  margin-top:6px;
-  font-size:16px;
+
+/* layout */
+.vitrine{
+  position:fixed;
+  inset:0;
+  display:flex;
 }
-button{
-  margin-top:20px;
-  width:100%;
-  padding:14px;
-  font-size:18px;
-  background:#00c2ff;
-  color:#000;
-  border:none;
-  font-weight:bold;
-  cursor:pointer;
-}
-.preview{
+
+/* lateral imagens */
+.lateral{
+  width:240px;
+  background:#fff;
+  padding:10px;
   display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:8px;
-  margin-top:15px;
+  grid-template-rows:repeat(5,1fr);
+  gap:10px;
 }
-.preview img{
+.lateral img{
   width:100%;
   aspect-ratio:1/1;
   object-fit:cover;
-  border-radius:6px;
+  border-radius:8px;
 }
-small{opacity:.7}
+
+/* player */
+.player{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  color:#fff;
+}
+button{
+  padding:16px 30px;
+  font-size:20px;
+  background:#00c2ff;
+  border:none;
+  cursor:pointer;
+}
+audio{
+  width:80%;
+  margin-top:20px;
+}
 </style>
 </head>
 
 <body>
 
-<h2>🎛️ Admin • Vitrine FF Bar</h2>
+<div class="vitrine">
+  <div class="lateral" id="galeria"></div>
 
-<label>Link ou ID do YouTube</label>
-<input id="youtubeInput" placeholder="cole o link ou só o ID">
-
-<small>pode colar link completo ou só o ID</small>
-
-<label>Imagens da vitrine (até 5)</label>
-<input type="file" id="imgs" accept="image/*" multiple>
-
-<div class="preview" id="preview"></div>
-
-<button onclick="salvar()">Salvar</button>
+  <div class="player">
+    <h2>🎶 Player Local</h2>
+    <input type="file" id="musicas" accept="audio/*" multiple>
+    <button onclick="tocar()">▶ TOCAR</button>
+    <audio id="audio" controls></audio>
+  </div>
+</div>
 
 <script>
-let imagensBase64 = [];
-const preview = document.getElementById("preview");
+const galeria = document.getElementById("galeria");
 
-// upload imagens
-imgs.onchange = () => {
-  imagensBase64 = [];
-  preview.innerHTML = "";
-
-  [...imgs.files].slice(0,5).forEach(file=>{
-    const reader = new FileReader();
-    reader.onload = e=>{
-      imagensBase64.push(e.target.result);
-      const img = document.createElement("img");
-      img.src = e.target.result;
-      preview.appendChild(img);
-    };
-    reader.readAsDataURL(file);
-  });
-};
-
-// extrai ID do link se necessário
-function extrairID(valor){
-  if(valor.includes("youtube.com") || valor.includes("youtu.be")){
-    const url = new URL(valor);
-    return url.searchParams.get("v") || valor.split("/").pop();
-  }
-  return valor;
+// imagens exemplo (tu pode trocar depois)
+for(let i=0;i<5;i++){
+  const img=document.createElement("img");
+  img.style.background="#eee";
+  galeria.appendChild(img);
 }
 
-function salvar(){
-  const bruto = youtubeInput.value.trim();
-  if(!bruto){
-    alert("Cole o link ou ID do YouTube");
+let lista = [];
+let atual = 0;
+
+musicas.onchange = () => {
+  lista = [...musicas.files];
+};
+
+function tocar(){
+  if(lista.length === 0){
+    alert("Selecione músicas");
     return;
   }
+  tocarAtual();
+}
 
-  const dados = {
-    id: extrairID(bruto),
-    imagens: imagensBase64
+function tocarAtual(){
+  const audio = document.getElementById("audio");
+  audio.src = URL.createObjectURL(lista[atual]);
+  audio.play();
+
+  audio.onended = () => {
+    atual = (atual + 1) % lista.length;
+    tocarAtual();
   };
-
-  localStorage.setItem("ffConfig", JSON.stringify(dados));
-  alert("Salvo! Atualize a vitrine.");
 }
 </script>
 
