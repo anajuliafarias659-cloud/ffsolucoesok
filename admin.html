@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Admin • Bar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#111;
+  color:#fff;
+  padding:20px;
+}
+input{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+}
+button{
+  padding:12px;
+  width:100%;
+  background:#e50914;
+  color:#fff;
+  border:none;
+  font-size:16px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Editar Vitrine do Bar</h2>
+
+<input id="nome" placeholder="Nome do Bar">
+<input id="sub" placeholder="Subtítulo">
+<input id="l1" placeholder="Linha 1">
+<input id="l2" placeholder="Linha 2">
+<input id="l3" placeholder="Linha 3">
+<input id="assinatura" placeholder="Assinatura">
+<input id="video" placeholder="ID do YouTube">
+
+<button onclick="salvar()">Salvar</button>
+
+<script>
+function salvar(){
+  const dados = {
+    nome:nome.value,
+    sub:sub.value,
+    l1:l1.value,
+    l2:l2.value,
+    l3:l3.value,
+    assinatura:assinatura.value,
+    video:video.value
+  };
+  localStorage.setItem("barData", JSON.stringify(dados));
+  alert("Salvo! Atualize a vitrine.");
+}
+</script>
+
+</body>
+</html>
