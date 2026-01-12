@@ -2,88 +2,119 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Admin • Vitrine</title>
+<title>FF Bar • Vitrine</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
-  background:#111;
-  color:#fff;
+  margin:0;
+  background:#000;
   font-family:Arial,Helvetica,sans-serif;
-  padding:20px;
 }
-input{
-  width:100%;
+
+/* LAYOUT */
+.vitrine{
+  position:fixed;
+  inset:0;
+  display:flex;
+}
+
+/* LATERAL DE IMAGENS */
+.lateral{
+  width:240px;
+  background:#fff;
   padding:10px;
-  margin:10px 0;
-}
-button{
-  width:100%;
-  padding:12px;
-  background:#e50914;
-  border:none;
-  color:#fff;
-  font-size:16px;
-}
-.preview{
   display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:8px;
-  margin:15px 0;
+  grid-template-rows:repeat(5,1fr);
+  gap:10px;
 }
-.preview img{
+
+.lateral img{
   width:100%;
   aspect-ratio:1/1;
   object-fit:cover;
-  border-radius:6px;
+  border-radius:8px;
+}
+
+/* VIDEO */
+.video{
+  flex:1;
+  background:#000;
+}
+
+iframe{
+  width:100%;
+  height:100%;
+  border:none;
 }
 </style>
 </head>
 
 <body>
 
-<h2>Upload das Imagens da Vitrine</h2>
+<div class="vitrine">
+  <div class="lateral" id="galeria"></div>
 
-<input type="file" id="imgs" accept="image/*" multiple>
-
-<div class="preview" id="preview"></div>
-
-<button onclick="salvar()">Salvar</button>
+  <div class="video">
+    <iframe
+      id="player"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
+  </div>
+</div>
 
 <script>
-let imagensBase64 = [];
-const preview = document.getElementById("preview");
+/* =====================================
+   🔧 CONFIGURAÇÃO (MEXE SÓ AQUI)
+===================================== */
 
-imgs.onchange = () => {
-  imagensBase64 = [];
-  preview.innerHTML = "";
+// ▶️ ID DO VÍDEO ou PLAYLIST
+// 👉 vídeo único: "HJoIri7KxMs"
+// 👉 playlist: "PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI"
+const YOUTUBE_ID = "PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI";
 
-  [...imgs.files].slice(0,5).forEach(file=>{
-    const reader = new FileReader();
-    reader.onload = e=>{
-      imagensBase64.push(e.target.result);
+// 👉 true = playlist | false = vídeo único
+const E_PLAYLIST = true;
 
-      const img = document.createElement("img");
-      img.src = e.target.result;
-      preview.appendChild(img);
-    };
-    reader.readAsDataURL(file);
-  });
-};
+// 🖼️ IMAGENS DA LATERAL (até 5)
+// 👉 pode colocar link OU base64
+const IMAGENS = [
+  "https://via.placeholder.com/500",
+  "https://via.placeholder.com/500",
+  "https://via.placeholder.com/500",
+  "https://via.placeholder.com/500",
+  "https://via.placeholder.com/500"
+];
 
-function salvar(){
-  if(imagensBase64.length === 0){
-    alert("Selecione pelo menos uma imagem");
-    return;
-  }
+/* =====================================
+   ❌ NÃO MEXE DAQUI PRA BAIXO
+===================================== */
 
-  const dados = {
-    imagens: imagensBase64,
-    video: "HJoIri7KxMs"
-  };
+// carrega imagens
+const galeria = document.getElementById("galeria");
+IMAGENS.slice(0,5).forEach(src=>{
+  const img = document.createElement("img");
+  img.src = src;
+  galeria.appendChild(img);
+});
 
-  localStorage.setItem("barData", JSON.stringify(dados));
-  alert("Imagens salvas! Agora atualiza a vitrine.");
+// completa espaços vazios
+while(galeria.children.length < 5){
+  const img = document.createElement("img");
+  img.style.background = "#eee";
+  galeria.appendChild(img);
+}
+
+// carrega vídeo ou playlist
+const player = document.getElementById("player");
+
+if(E_PLAYLIST){
+  player.src =
+  `https://www.youtube.com/embed/videoseries?list=${YOUTUBE_ID}&autoplay=1&mute=1&controls=0&rel=0&playsinline=1`;
+}else{
+  player.src =
+  `https://www.youtube.com/embed/${YOUTUBE_ID}?autoplay=1&mute=1&controls=0&rel=0&playsinline=1`;
 }
 </script>
 
