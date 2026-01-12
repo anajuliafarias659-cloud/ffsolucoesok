@@ -12,7 +12,6 @@ body{
   font-family:Arial,Helvetica,sans-serif;
   padding:20px;
 }
-h2{margin-bottom:10px}
 label{display:block;margin-top:15px}
 input{
   width:100%;
@@ -43,22 +42,17 @@ button{
   object-fit:cover;
   border-radius:6px;
 }
-small{opacity:.7}
 </style>
 </head>
 
 <body>
 
-<h2>🎛️ Admin • Vitrine FF Bar</h2>
+<h2>Admin • Vitrine FF Bar</h2>
 
-<!-- 🔊 ID DO YOUTUBE -->
-<label>ID do YouTube (música, filme ou playlist)</label>
+<label>ID do YouTube (playlist, música ou filme)</label>
 <input id="youtubeId" placeholder="Ex: PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI">
 
-<small>Não cola o link inteiro, só o ID</small>
-
-<!-- 🖼️ UPLOAD DE IMAGENS -->
-<label>Imagens da Vitrine (até 5)</label>
+<label>Imagens da lateral (até 5)</label>
 <input type="file" id="imgs" accept="image/*" multiple>
 
 <div class="preview" id="preview"></div>
@@ -69,8 +63,7 @@ small{opacity:.7}
 let imagensBase64 = [];
 const preview = document.getElementById("preview");
 
-// upload das imagens
-imgs.onchange = () => {
+imgs.onchange = ()=>{
   imagensBase64 = [];
   preview.innerHTML = "";
 
@@ -87,20 +80,18 @@ imgs.onchange = () => {
 };
 
 function salvar(){
-  const id = youtubeId.value.trim();
-
-  if(!id){
-    alert("Cola o ID do YouTube 👀");
+  if(!youtubeId.value.trim()){
+    alert("Cola o ID do YouTube");
     return;
   }
 
   const dados = {
-    id,
+    id: youtubeId.value.trim(),
     imagens: imagensBase64
   };
 
   localStorage.setItem("ffConfig", JSON.stringify(dados));
-  alert("Salvo! Agora atualiza a vitrine.");
+  alert("Salvo! Atualiza a vitrine.");
 }
 </script>
 
