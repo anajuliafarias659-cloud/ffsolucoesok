@@ -13,26 +13,23 @@ body{
   font-family:Arial,Helvetica,sans-serif;
 }
 
-/* TOPO IMAGENS */
+/* TOPO - 2 BANNERS */
 .top-images{
-  height:120px;
-  background:#111;
-  display:flex;
-  gap:10px;
-  padding:10px;
-  overflow-x:auto;
+  height:260px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  background:#000;
 }
 .top-images img{
+  width:100%;
   height:100%;
-  aspect-ratio:1/1;
   object-fit:cover;
-  border-radius:8px;
 }
 
 /* LAYOUT */
 .container{
   display:flex;
-  height:calc(100vh - 140px);
+  height:calc(100vh - 260px);
 }
 
 /* MENU */
@@ -41,6 +38,7 @@ body{
   background:#111;
   padding:10px;
 }
+.menu h3{margin-top:0}
 .menu button{
   width:100%;
   margin-bottom:8px;
@@ -50,7 +48,10 @@ body{
   font-weight:bold;
   cursor:pointer;
 }
-.menu input{margin-bottom:10px;width:100%}
+.menu input{
+  width:100%;
+  margin-bottom:10px;
+}
 
 /* PLAYER */
 .player{
@@ -88,8 +89,11 @@ canvas{
 
 <body>
 
-<!-- IMAGENS TOPO -->
-<div class="top-images" id="topImages"></div>
+<!-- TOPO -->
+<div class="top-images">
+  <img id="top1">
+  <img id="top2">
+</div>
 
 <div class="container">
 
@@ -119,7 +123,7 @@ canvas{
     <canvas id="visualizer"></canvas>
   </div>
 
-  <!-- IMAGENS LATERAL -->
+  <!-- LATERAL -->
   <div class="lateral" id="lateralImgs"></div>
 
 </div>
@@ -137,7 +141,7 @@ function setGenero(g){
 }
 
 /* ===== MÚSICAS ===== */
-musicasInput = document.getElementById("musicas");
+const musicasInput = document.getElementById("musicas");
 musicasInput.onchange = () => {
   if(!generoAtual){
     alert("Escolhe o gênero primeiro");
@@ -165,24 +169,24 @@ function tocar(){
   };
 }
 
-/* ===== IMAGENS ===== */
-const topImages = document.getElementById("topImages");
+/* ===== IMAGENS (2 TOPO + RESTO LATERAL) ===== */
+const top1 = document.getElementById("top1");
+const top2 = document.getElementById("top2");
 const lateralImgs = document.getElementById("lateralImgs");
+const imgs = document.getElementById("imgs");
 
 imgs.onchange = ()=>{
-  topImages.innerHTML="";
-  lateralImgs.innerHTML="";
+  lateralImgs.innerHTML = "";
 
-  [...imgs.files].slice(0,5).forEach(f=>{
-    const src = URL.createObjectURL(f);
+  const files = [...imgs.files];
 
-    const imgTop = document.createElement("img");
-    imgTop.src = src;
-    topImages.appendChild(imgTop);
+  if(files[0]) top1.src = URL.createObjectURL(files[0]);
+  if(files[1]) top2.src = URL.createObjectURL(files[1]);
 
-    const imgLat = document.createElement("img");
-    imgLat.src = src;
-    lateralImgs.appendChild(imgLat);
+  files.slice(2).forEach(f=>{
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(f);
+    lateralImgs.appendChild(img);
   });
 };
 
