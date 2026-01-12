@@ -9,35 +9,41 @@
 body{
   margin:0;
   background:#000;
-  font-family:Arial,Helvetica,sans-serif;
   color:#fff;
+  font-family:Arial,Helvetica,sans-serif;
 }
 .container{
   display:flex;
   height:100vh;
 }
-
-/* MENU */
 .menu{
-  width:240px;
+  width:220px;
   background:#111;
   padding:10px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
 }
 .menu button{
+  width:100%;
+  margin-bottom:8px;
   padding:12px;
   background:#00c2ff;
   border:none;
   font-weight:bold;
   cursor:pointer;
 }
-.menu input{margin-top:6px}
-
-/* IMAGENS */
+.player{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+canvas{
+  width:80%;
+  height:200px;
+  margin-top:20px;
+}
 .lateral{
-  width:220px;
+  width:200px;
   background:#fff;
   padding:10px;
   display:grid;
@@ -48,24 +54,8 @@ body{
   width:100%;
   aspect-ratio:1/1;
   object-fit:cover;
-  border-radius:8px;
-}
-
-/* PLAYER */
-.player{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
 }
 audio{display:none}
-canvas{
-  width:80%;
-  height:200px;
-  margin-top:20px;
-  background:#000;
-}
 </style>
 </head>
 
@@ -73,7 +63,6 @@ canvas{
 
 <div class="container">
 
-  <!-- MENU -->
   <div class="menu">
     <h3>🎵 Gênero</h3>
     <button onclick="setGenero('sertanejo')">Sertanejo</button>
@@ -82,20 +71,17 @@ canvas{
     <button onclick="setGenero('forro')">Forró</button>
 
     <hr>
-
     <label>📂 Pasta de músicas</label>
     <input type="file" id="musicas" webkitdirectory multiple>
 
     <label>🖼️ Imagens</label>
     <input type="file" id="imgs" accept="image/*" multiple>
 
-    <button onclick="iniciar()">▶ TOCAR</button>
+    <button onclick="tocar()">▶ TOCAR</button>
   </div>
 
-  <!-- IMAGENS -->
   <div class="lateral" id="galeria"></div>
 
-  <!-- PLAYER -->
   <div class="player">
     <h2 id="titulo">Escolha um gênero</h2>
     <audio id="audio"></audio>
@@ -105,164 +91,84 @@ canvas{
 </div>
 
 <script>
-/* ================== BANCO ================== */
-let db;
-
-const openReq = indexedDB.open("FF_BAR_DB", 1);
-
-openReq.onupgradeneeded = e => {
-  const db = e.target.result;
-  db.createObjectStore("musicas", { keyPath:"id", autoIncrement:true });
-  db.createObjectStore("imagens", { keyPath:"id", autoIncrement:true });
-};
-
-openReq.onsuccess = e => {
-  db = e.target.result;
-  carregarImagens();
-};
-
-/* ================== IMAGENS ================== */
-const galeria = document.getElementById("galeria");
-
-function carregarImagens(){
-  galeria.innerHTML = "";
-  const tx = db.transaction("imagens","readonly");
-  const store = tx.objectStore("imagens");
-
-  store.openCursor().onsuccess = e => {
-    const c = e.target.result;
-    if(c){
-      const img = document.createElement("img");
-      img.src = c.value.src;
-      galeria.appendChild(img);
-      c.continue();
-    }
-  };
-}
-
-imgs.onchange = () => {
-  const tx = db.transaction("imagens","readwrite");
-  const store = tx.objectStore("imagens");
-  store.clear();
-
-  [...imgs.files].slice(0,5).forEach(file=>{
-    const reader = new FileReader();
-    reader.onload = e => {
-      store.add({ src: e.target.result });
-    };
-    reader.readAsDataURL(file);
-  });
-
-  tx.oncomplete = carregarImagens;
-};
-
-/* ================== MÚSICAS ================== */
 let generoAtual = null;
-let lista = [];
+let musicas = [];
 let index = 0;
 
+/* ===== GÊNERO ===== */
 function setGenero(g){
   generoAtual = g;
   titulo.innerText = "🎶 " + g.toUpperCase();
-  carregarMusicas();
+  musicas = [];
 }
 
-musicas.onchange = () => {
+/* ===== MÚSICAS ===== */
+musicasInput = document.getElementById("musicas");
+musicasInput.onchange = () => {
   if(!generoAtual){
     alert("Escolhe o gênero primeiro");
+    musicasInput.value = "";
     return;
   }
-
-  const tx = db.transaction("musicas","readwrite");
-  const store = tx.objectStore("musicas");
-
-  [...musicas.files].forEach(file=>{
-    const reader = new FileReader();
-    reader.onload = e => {
-      store.add({
-        genero: generoAtual,
-        audio: e.target.result
-      });
-    };
-    reader.readAsDataURL(file);
-  });
-
-  tx.oncomplete = carregarMusicas;
+  musicas = [...musicasInput.files];
 };
 
-function carregarMusicas(){
-  lista = [];
-  const tx = db.transaction("musicas","readonly");
-  const store = tx.objectStore("musicas");
-
-  store.openCursor().onsuccess = e => {
-    const c = e.target.result;
-    if(c){
-      if(c.value.genero === generoAtual){
-        lista.push(c.value.audio);
-      }
-      c.continue();
-    }
-  };
-}
-
-/* ================== PLAYER ================== */
+/* ===== PLAYER ===== */
 const audio = document.getElementById("audio");
 
-function iniciar(){
-  if(lista.length === 0){
-    alert("Sem músicas nesse gênero");
+function tocar(){
+  if(!musicas.length){
+    alert("Nenhuma música carregada");
     return;
   }
-  tocar();
-}
-
-function tocar(){
-  audio.src = lista[index];
+  audio.src = URL.createObjectURL(musicas[index]);
   audio.play();
+  iniciarVisualizer();
 
-  audio.onended = () => {
-    index = (index + 1) % lista.length;
+  audio.onended = ()=>{
+    index = (index + 1) % musicas.length;
     tocar();
   };
-
-  iniciarVisualizer();
 }
 
-/* ================== VISUALIZER ================== */
-const canvas = document.getElementById("visualizer");
-const ctx = canvas.getContext("2d");
+/* ===== IMAGENS ===== */
+imgs.onchange = ()=>{
+  galeria.innerHTML="";
+  [...imgs.files].slice(0,5).forEach(f=>{
+    const img=document.createElement("img");
+    img.src=URL.createObjectURL(f);
+    galeria.appendChild(img);
+  });
+};
+
+/* ===== VISUALIZER ===== */
+const canvas=document.getElementById("visualizer");
+const ctx=canvas.getContext("2d");
 let audioCtx, analyser, data;
 
 function iniciarVisualizer(){
   if(audioCtx) return;
-
-  audioCtx = new AudioContext();
-  analyser = audioCtx.createAnalyser();
-  analyser.fftSize = 256;
-  data = new Uint8Array(analyser.frequencyBinCount);
-
-  const src = audioCtx.createMediaElementSource(audio);
+  audioCtx=new AudioContext();
+  analyser=audioCtx.createAnalyser();
+  analyser.fftSize=256;
+  data=new Uint8Array(analyser.frequencyBinCount);
+  const src=audioCtx.createMediaElementSource(audio);
   src.connect(analyser);
   analyser.connect(audioCtx.destination);
-
   draw();
 }
 
 function draw(){
   requestAnimationFrame(draw);
   analyser.getByteFrequencyData(data);
-
-  ctx.fillStyle = "#000";
+  ctx.fillStyle="#000";
   ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  let x = 0;
-  const w = canvas.width / data.length;
-
+  let x=0;
+  const w=canvas.width/data.length;
   data.forEach(v=>{
-    ctx.fillStyle = `rgb(${v+80},40,40)`;
-    ctx.fillRect(x, canvas.height - v, w, v);
-    x += w;
+    ctx.fillStyle=`rgb(${v+80},50,50)`;
+    ctx.fillRect(x,canvas.height-v,w,v);
+    x+=w;
   });
 }
 </script>
