@@ -12,10 +12,30 @@ body{
   color:#fff;
   font-family:Arial,Helvetica,sans-serif;
 }
+
+/* TOPO IMAGENS */
+.top-images{
+  height:120px;
+  background:#111;
+  display:flex;
+  gap:10px;
+  padding:10px;
+  overflow-x:auto;
+}
+.top-images img{
+  height:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+/* LAYOUT */
 .container{
   display:flex;
-  height:100vh;
+  height:calc(100vh - 140px);
 }
+
+/* MENU */
 .menu{
   width:220px;
   background:#111;
@@ -30,6 +50,9 @@ body{
   font-weight:bold;
   cursor:pointer;
 }
+.menu input{margin-bottom:10px;width:100%}
+
+/* PLAYER */
 .player{
   flex:1;
   display:flex;
@@ -37,11 +60,15 @@ body{
   align-items:center;
   justify-content:center;
 }
+audio{display:none}
 canvas{
   width:80%;
   height:200px;
   margin-top:20px;
+  background:#000;
 }
+
+/* LATERAL IMAGENS */
 .lateral{
   width:200px;
   background:#fff;
@@ -54,15 +81,19 @@ canvas{
   width:100%;
   aspect-ratio:1/1;
   object-fit:cover;
+  border-radius:8px;
 }
-audio{display:none}
 </style>
 </head>
 
 <body>
 
+<!-- IMAGENS TOPO -->
+<div class="top-images" id="topImages"></div>
+
 <div class="container">
 
+  <!-- MENU -->
   <div class="menu">
     <h3>🎵 Gênero</h3>
     <button onclick="setGenero('sertanejo')">Sertanejo</button>
@@ -71,6 +102,7 @@ audio{display:none}
     <button onclick="setGenero('forro')">Forró</button>
 
     <hr>
+
     <label>📂 Pasta de músicas</label>
     <input type="file" id="musicas" webkitdirectory multiple>
 
@@ -80,13 +112,15 @@ audio{display:none}
     <button onclick="tocar()">▶ TOCAR</button>
   </div>
 
-  <div class="lateral" id="galeria"></div>
-
+  <!-- PLAYER -->
   <div class="player">
     <h2 id="titulo">Escolha um gênero</h2>
     <audio id="audio"></audio>
     <canvas id="visualizer"></canvas>
   </div>
+
+  <!-- IMAGENS LATERAL -->
+  <div class="lateral" id="lateralImgs"></div>
 
 </div>
 
@@ -132,12 +166,23 @@ function tocar(){
 }
 
 /* ===== IMAGENS ===== */
+const topImages = document.getElementById("topImages");
+const lateralImgs = document.getElementById("lateralImgs");
+
 imgs.onchange = ()=>{
-  galeria.innerHTML="";
+  topImages.innerHTML="";
+  lateralImgs.innerHTML="";
+
   [...imgs.files].slice(0,5).forEach(f=>{
-    const img=document.createElement("img");
-    img.src=URL.createObjectURL(f);
-    galeria.appendChild(img);
+    const src = URL.createObjectURL(f);
+
+    const imgTop = document.createElement("img");
+    imgTop.src = src;
+    topImages.appendChild(imgTop);
+
+    const imgLat = document.createElement("img");
+    imgLat.src = src;
+    lateralImgs.appendChild(imgLat);
   });
 };
 
