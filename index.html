@@ -2,12 +2,11 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>FFCINE</title>
+<title>FFCINE – Teste</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-
 body{
   background:#0f0f0f;
   color:#fff;
@@ -16,27 +15,12 @@ body{
 
 /* LOGO TOPO */
 #logoTop{
-  position: sticky;
-  top: 0;
-  width: 100%;
-  text-align: center;
-  font-size: 28px;
-  color: #e50914;
-  font-weight: bold;
-  padding: 12px 0;
-  background: #000;
-  z-index: 100;
-}
-
-/* LOGO OVERLAY */
-#logoOverlay{
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  width: 120px;
-  z-index: 99999;
-  pointer-events: none;
-  display: none;
+  text-align:center;
+  font-size:28px;
+  color:#e50914;
+  font-weight:bold;
+  padding:12px 0;
+  background:#000;
 }
 
 /* PLAYER */
@@ -47,40 +31,25 @@ body{
   position:relative;
 }
 
-/* SLIDES */
-#playerGrid{
-  width:100%;
-  height:100%;
-  display:grid;
-  gap:6px;
+/* FULLSCREEN FAKE */
+.player.fullscreen{
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100vh;
+  z-index:9999;
 }
 
-.gridCell{
-  width:100%;
-  aspect-ratio:2/3;
-  border-radius:10px;
-  overflow:hidden;
-}
-
-.gridCell img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  animation: fadeZoom 4s infinite;
-}
-
-@media (min-width: 901px){
-  #playerGrid{grid-template-columns:repeat(6,1fr);}
-}
-@media (max-width: 900px){
-  #playerGrid{grid-template-columns:repeat(3,1fr);}
-}
-
-@keyframes fadeZoom{
-  0%{opacity:0;transform:scale(1.1)}
-  20%{opacity:1}
-  80%{opacity:1}
-  100%{opacity:0;transform:scale(1)}
+/* LOGO NO FILME */
+#logoOverlay{
+  position:absolute;
+  bottom:20px;
+  left:20px;
+  width:90px;
+  opacity:0.45;
+  z-index:10;
+  pointer-events:none;
+  display:none;
 }
 
 /* PLAYER VIDEO */
@@ -114,25 +83,15 @@ body{
 
 <body>
 
-<img id="logoOverlay" src="img/logo.png" alt="FFCINE">
-
 <div id="logoTop">FFCINE</div>
 
-<div class="player">
-  <iframe id="mainPlayer" allow="autoplay; fullscreen" allowfullscreen></iframe>
-  <div id="playerGrid"></div>
-</div>
-
-<div style="max-width:900px; margin:15px auto; padding:0 10px;">
-  <input id="searchInput" placeholder="Buscar no catálogo"
-    style="width:100%; padding:10px; border-radius:6px; border:none;">
-  <button onclick="buscar()"
-    style="margin-top:6px; padding:8px 14px; background:#e50914; color:#fff; border:none; border-radius:6px;">
-    Buscar
-  </button>
+<div class="player" id="player">
+  <img id="logoOverlay" src="img/logo.png" alt="FFCINE">
+  <iframe id="mainPlayer" allow="autoplay; playsinline"></iframe>
 </div>
 
 <div class="gallery">
+
   <div class="movie" onclick="playMovie('eecbS-qCZXc')">
     <img src="https://img.youtube.com/vi/eecbS-qCZXc/hqdefault.jpg">
     <div class="movie-title">O Lobo</div>
@@ -142,59 +101,32 @@ body{
     <img src="https://img.youtube.com/vi/HJoIri7KxMs/hqdefault.jpg">
     <div class="movie-title">Carga Explosiva 3</div>
   </div>
+
+  <div class="movie" onclick="playMovie('ISgmlhSJopU')">
+    <img src="https://img.youtube.com/vi/ISgmlhSJopU/hqdefault.jpg">
+    <div class="movie-title">XIII – A Conspiração</div>
+  </div>
+
+  <div class="movie" onclick="playMovie('P_dPk_z3_v8')">
+    <img src="https://img.youtube.com/vi/P_dPk_z3_v8/hqdefault.jpg">
+    <div class="movie-title">Rambo – Programado Para Matar</div>
+  </div>
+
 </div>
 
 <script>
-const slides=[
-  "https://img.youtube.com/vi/eecbS-qCZXc/maxresdefault.jpg",
-  "https://img.youtube.com/vi/ISgmlhSJopU/maxresdefault.jpg",
-  "https://img.youtube.com/vi/HJoIri7KxMs/hqdefault.jpg",
-  "https://img.youtube.com/vi/_J-tObfmlQA/maxresdefault.jpg",
-  "https://img.youtube.com/vi/P_dPk_z3_v8/maxresdefault.jpg",
-  "https://img.youtube.com/vi/_xxOd2sDxHk/maxresdefault.jpg"
-];
-
-let started=false;
-
-function startSlides(){
-  const grid=document.getElementById('playerGrid');
-
-  function update(){
-    if(started) return;
-    grid.innerHTML='';
-    for(let i=0;i<6;i++){
-      const c=document.createElement('div');
-      c.className='gridCell';
-      const img=document.createElement('img');
-      img.src=slides[Math.floor(Math.random()*slides.length)];
-      c.appendChild(img);
-      grid.appendChild(c);
-    }
-  }
-
-  update();
-  setInterval(update,4000);
-}
-
 function playMovie(id){
-  started=true;
+  const player=document.getElementById('player');
+  const iframe=document.getElementById('mainPlayer');
+
+  player.classList.add('fullscreen');
+  iframe.style.display='block';
+
   document.getElementById('logoOverlay').style.display='block';
   document.getElementById('logoTop').style.display='none';
-  document.getElementById('playerGrid').style.display='none';
 
-  const iframe=document.getElementById('mainPlayer');
-  iframe.style.display='block';
-  iframe.src=`https://www.youtube.com/embed/${id}?autoplay=1&playsinline=1`;
+  iframe.src=`https://www.youtube.com/embed/${id}?autoplay=1&playsinline=1&controls=1`;
 }
-
-function buscar(){
-  const q=document.getElementById('searchInput').value.toLowerCase();
-  document.querySelectorAll('.movie').forEach(m=>{
-    m.style.display=m.innerText.toLowerCase().includes(q)?'':'none';
-  });
-}
-
-startSlides();
 </script>
 
 </body>
