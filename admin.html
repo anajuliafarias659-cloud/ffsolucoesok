@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>FF Bar Player</title>
+<title>FF Bar Vitrine</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -13,7 +13,7 @@ body{
   font-family:Arial,Helvetica,sans-serif;
 }
 
-/* TOPO – IGUAL LATERAL */
+/* ===== TOPO ===== */
 .top-images{
   height:180px;
   background:#fff;
@@ -29,19 +29,21 @@ body{
   border-radius:8px;
 }
 
-/* LAYOUT */
+/* ===== LAYOUT ===== */
 .container{
   display:flex;
   height:calc(100vh - 180px);
 }
 
-/* MENU */
+/* ===== MENU ===== */
 .menu{
   width:220px;
   background:#111;
   padding:10px;
 }
-.menu h3{margin-top:0}
+.menu h3{
+  margin-top:0;
+}
 .menu button{
   width:100%;
   margin-bottom:8px;
@@ -56,7 +58,7 @@ body{
   margin-bottom:10px;
 }
 
-/* PLAYER */
+/* ===== PLAYER ===== */
 .player{
   flex:1;
   display:flex;
@@ -64,7 +66,9 @@ body{
   align-items:center;
   justify-content:center;
 }
-audio{display:none}
+audio{
+  display:none;
+}
 canvas{
   width:80%;
   height:200px;
@@ -72,7 +76,7 @@ canvas{
   background:#000;
 }
 
-/* LATERAL */
+/* ===== LATERAL ===== */
 .lateral{
   width:200px;
   background:#fff;
@@ -144,7 +148,7 @@ function setGenero(g){
 const musicasInput = document.getElementById("musicas");
 musicasInput.onchange = () => {
   if(!generoAtual){
-    alert("Escolhe o gênero primeiro");
+    alert("Escolha o gênero primeiro");
     musicasInput.value = "";
     return;
   }
@@ -196,17 +200,17 @@ imgs.onchange = ()=>{
 };
 
 /* ===== VISUALIZER ===== */
-const canvas=document.getElementById("visualizer");
-const ctx=canvas.getContext("2d");
+const canvas = document.getElementById("visualizer");
+const ctx = canvas.getContext("2d");
 let audioCtx, analyser, data;
 
 function iniciarVisualizer(){
   if(audioCtx) return;
-  audioCtx=new AudioContext();
-  analyser=audioCtx.createAnalyser();
-  analyser.fftSize=256;
-  data=new Uint8Array(analyser.frequencyBinCount);
-  const src=audioCtx.createMediaElementSource(audio);
+  audioCtx = new AudioContext();
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 256;
+  data = new Uint8Array(analyser.frequencyBinCount);
+  const src = audioCtx.createMediaElementSource(audio);
   src.connect(analyser);
   analyser.connect(audioCtx.destination);
   draw();
@@ -215,14 +219,14 @@ function iniciarVisualizer(){
 function draw(){
   requestAnimationFrame(draw);
   analyser.getByteFrequencyData(data);
-  ctx.fillStyle="#000";
+  ctx.fillStyle = "#000";
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  let x=0;
-  const w=canvas.width/data.length;
+  let x = 0;
+  const w = canvas.width / data.length;
   data.forEach(v=>{
-    ctx.fillStyle=`rgb(${v+80},50,50)`;
-    ctx.fillRect(x,canvas.height-v,w,v);
-    x+=w;
+    ctx.fillStyle = `rgb(${v+80},50,50)`;
+    ctx.fillRect(x, canvas.height - v, w, v);
+    x += w;
   });
 }
 </script>
