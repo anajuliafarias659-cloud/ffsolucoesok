@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>FF Bar • Player Local</title>
+<title>FF Bar • Player Visual</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -11,11 +11,15 @@ body{
   background:#000;
   font-family:Arial,Helvetica,sans-serif;
 }
+
+/* layout */
 .vitrine{
   position:fixed;
   inset:0;
   display:flex;
 }
+
+/* lateral imagens */
 .lateral{
   width:240px;
   background:#fff;
@@ -30,15 +34,19 @@ body{
   object-fit:cover;
   border-radius:8px;
 }
+
+/* player */
 .player{
   flex:1;
-  color:#fff;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
+  color:#fff;
 }
+
 input{margin:6px 0}
+
 button{
   margin-top:10px;
   padding:12px 26px;
@@ -47,17 +55,30 @@ button{
   border:none;
   cursor:pointer;
 }
-audio{width:80%;margin-top:10px}
+
+audio{
+  width:80%;
+  margin-top:10px;
+}
+
+canvas{
+  width:80%;
+  height:200px;
+  margin-top:20px;
+  background:#000;
+}
 </style>
 </head>
 
 <body>
 
 <div class="vitrine">
+  <!-- IMAGENS -->
   <div class="lateral" id="galeria"></div>
 
+  <!-- PLAYER -->
   <div class="player">
-    <h2>🎶 Player Local</h2>
+    <h2>🎶 FF Bar Player</h2>
 
     <label>Adicionar músicas (MP3)</label>
     <input type="file" id="musicas" accept="audio/*" multiple>
@@ -68,17 +89,14 @@ audio{width:80%;margin-top:10px}
     <button onclick="iniciar()">▶ TOCAR</button>
 
     <audio id="audio" controls></audio>
+    <canvas id="visualizer"></canvas>
   </div>
 </div>
 
 <script>
-/* ===== ESTADO SALVO ===== */
-let imagensSalvas = JSON.parse(localStorage.getItem("ffImgs")) || [];
-let musicasLista = [];
-let atual = 0;
-
-/* ===== IMAGENS ===== */
+/* ================= IMAGENS ================= */
 const galeria = document.getElementById("galeria");
+let imagensSalvas = JSON.parse(localStorage.getItem("ffImgs")) || [];
 
 function renderImagens(){
   galeria.innerHTML = "";
@@ -108,10 +126,13 @@ imgs.onchange = () => {
   });
 };
 
-/* ===== MÚSICAS ===== */
+/* ================= MÚSICAS ================= */
+let musicasLista = [];
+let atual = 0;
+
 musicas.onchange = () => {
   [...musicas.files].forEach(file=>{
-    musicasLista.push(file); // adiciona, não substitui
+    musicasLista.push(file); // adiciona sem apagar
   });
 };
 
@@ -121,6 +142,7 @@ function iniciar(){
     return;
   }
   tocarAtual();
+  iniciarVisualizer();
 }
 
 function tocarAtual(){
@@ -132,6 +154,50 @@ function tocarAtual(){
     atual = (atual + 1) % musicasLista.length;
     tocarAtual();
   };
+}
+
+/* ================= VISUALIZER ================= */
+const canvas = document.getElementById("visualizer");
+const ctx = canvas.getContext("2d");
+
+let audioCtx, analyser, source, dataArray, bufferLength;
+
+function iniciarVisualizer(){
+  if(audioCtx) return;
+
+  const audio = document.getElementById("audio");
+
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 256;
+
+  bufferLength = analyser.frequencyBinCount;
+  dataArray = new Uint8Array(bufferLength);
+
+  source = audioCtx.createMediaElementSource(audio);
+  source.connect(analyser);
+  analyser.connect(audioCtx.destination);
+
+  desenhar();
+}
+
+function desenhar(){
+  requestAnimationFrame(desenhar);
+
+  analyser.getByteFrequencyData(dataArray);
+
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const barWidth = (canvas.width / bufferLength) * 2.5;
+  let x = 0;
+
+  for(let i = 0; i < bufferLength; i++){
+    const barHeight = dataArray[i];
+    ctx.fillStyle = `rgb(${barHeight+80},40,40)`;
+    ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+    x += barWidth + 1;
+  }
 }
 </script>
 
