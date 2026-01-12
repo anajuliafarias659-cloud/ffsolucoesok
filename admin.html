@@ -14,13 +14,12 @@ body{
 }
 h2{margin-bottom:10px}
 label{display:block;margin-top:15px}
-input, select, textarea{
+input{
   width:100%;
   padding:12px;
   margin-top:6px;
-  font-size:15px;
+  font-size:16px;
 }
-textarea{resize:none;height:110px}
 button{
   margin-top:20px;
   width:100%;
@@ -32,6 +31,18 @@ button{
   font-weight:bold;
   cursor:pointer;
 }
+.preview{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:8px;
+  margin-top:15px;
+}
+.preview img{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  border-radius:6px;
+}
 small{opacity:.7}
 </style>
 </head>
@@ -40,42 +51,56 @@ small{opacity:.7}
 
 <h2>🎛️ Admin • Vitrine FF Bar</h2>
 
-<label>Tipo de Conteúdo</label>
-<select id="tipo">
-  <option value="playlist">Playlist (músicas)</option>
-  <option value="video">Vídeo / Filme</option>
-</select>
-
-<label>ID do YouTube</label>
+<!-- 🔊 ID DO YOUTUBE -->
+<label>ID do YouTube (música, filme ou playlist)</label>
 <input id="youtubeId" placeholder="Ex: PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI">
 
-<label>Imagens da lateral (até 5)</label>
-<small>cole UM link por linha (imagem quadrada fica top)</small>
-<textarea id="imagens"></textarea>
+<small>Não cola o link inteiro, só o ID</small>
 
-<button onclick="salvar()">Salvar Configuração</button>
+<!-- 🖼️ UPLOAD DE IMAGENS -->
+<label>Imagens da Vitrine (até 5)</label>
+<input type="file" id="imgs" accept="image/*" multiple>
+
+<div class="preview" id="preview"></div>
+
+<button onclick="salvar()">Salvar</button>
 
 <script>
+let imagensBase64 = [];
+const preview = document.getElementById("preview");
+
+// upload das imagens
+imgs.onchange = () => {
+  imagensBase64 = [];
+  preview.innerHTML = "";
+
+  [...imgs.files].slice(0,5).forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      imagensBase64.push(e.target.result);
+      const img = document.createElement("img");
+      img.src = e.target.result;
+      preview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
 function salvar(){
-  const imagens = imagens.value
-    .split("\n")
-    .map(l => l.trim())
-    .filter(l => l !== "")
-    .slice(0,5);
+  const id = youtubeId.value.trim();
 
-  const dados = {
-    tipo: tipo.value,
-    id: youtubeId.value.trim(),
-    imagens
-  };
-
-  if(!dados.id){
+  if(!id){
     alert("Cola o ID do YouTube 👀");
     return;
   }
 
+  const dados = {
+    id,
+    imagens: imagensBase64
+  };
+
   localStorage.setItem("ffConfig", JSON.stringify(dados));
-  alert("Salvo! Atualiza a vitrine.");
+  alert("Salvo! Agora atualiza a vitrine.");
 }
 </script>
 
