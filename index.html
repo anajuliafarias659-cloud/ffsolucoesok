@@ -68,7 +68,11 @@ iframe{
   </div>
 
   <div class="video">
-    <iframe id="player"></iframe>
+    <iframe
+      id="player"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
   </div>
 </div>
 
@@ -83,15 +87,15 @@ const dados = JSON.parse(localStorage.getItem("barData")) || {
   video:"eecbS-qCZXc"
 };
 
-document.getElementById("barNome").innerText = dados.nome;
-document.getElementById("barSub").innerText = dados.sub;
-document.getElementById("linha1").innerText = dados.l1;
-document.getElementById("linha2").innerText = dados.l2;
-document.getElementById("linha3").innerText = dados.l3;
-document.getElementById("assinatura").innerText = dados.assinatura;
+barNome.innerText = dados.nome;
+barSub.innerText = dados.sub;
+linha1.innerText = dados.l1;
+linha2.innerText = dados.l2;
+linha3.innerText = dados.l3;
+assinatura.innerText = dados.assinatura;
 
-document.getElementById("player").src =
-`https://www.youtube.com/embed/${dados.video}?autoplay=1&mute=1&controls=0&rel=0`;
+player.src =
+`https://www.youtube.com/embed/${dados.video}?autoplay=1&mute=1&controls=0&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3`;
 </script>
 
 </body>
