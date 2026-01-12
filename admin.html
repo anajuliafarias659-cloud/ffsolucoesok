@@ -2,14 +2,14 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Admin • Bar</title>
+<title>Admin Vitrine</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
-  font-family:Arial,Helvetica,sans-serif;
   background:#111;
   color:#fff;
+  font-family:Arial,Helvetica,sans-serif;
   padding:20px;
 }
 input{
@@ -20,41 +20,87 @@ input{
 button{
   padding:12px;
   width:100%;
+  margin-top:10px;
   background:#e50914;
-  color:#fff;
   border:none;
+  color:#fff;
   font-size:16px;
+}
+.preview{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:6px;
+  margin-top:10px;
+}
+.preview img{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  border-radius:6px;
 }
 </style>
 </head>
 
 <body>
 
-<h2>Editar Vitrine do Bar</h2>
+<h2>Admin • Bar Vitrine</h2>
 
-<input id="nome" placeholder="Nome do Bar">
+<input id="nome" placeholder="Nome do bar">
 <input id="sub" placeholder="Subtítulo">
 <input id="l1" placeholder="Linha 1">
 <input id="l2" placeholder="Linha 2">
 <input id="l3" placeholder="Linha 3">
-<input id="assinatura" placeholder="Assinatura">
 <input id="video" placeholder="ID do YouTube">
+
+<label>Logo do Bar</label>
+<input type="file" id="logo" accept="image/*">
+
+<label>Imagens (até 5)</label>
+<input type="file" id="imgs" accept="image/*" multiple>
+
+<div class="preview" id="preview"></div>
 
 <button onclick="salvar()">Salvar</button>
 
 <script>
+const preview = document.getElementById("preview");
+let imagensBase64 = [];
+
+imgs.onchange = () => {
+  preview.innerHTML = "";
+  imagensBase64 = [];
+
+  [...imgs.files].slice(0,5).forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      imagensBase64.push(e.target.result);
+      const img = document.createElement("img");
+      img.src = e.target.result;
+      preview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
 function salvar(){
-  const dados = {
-    nome:nome.value,
-    sub:sub.value,
-    l1:l1.value,
-    l2:l2.value,
-    l3:l3.value,
-    assinatura:assinatura.value,
-    video:video.value
+  const reader = new FileReader();
+  reader.onload = e=>{
+    const dados = {
+      nome:nome.value,
+      sub:sub.value,
+      l1:l1.value,
+      l2:l2.value,
+      l3:l3.value,
+      video:video.value,
+      logo:e.target.result,
+      imagens:imagensBase64
+    };
+    localStorage.setItem("barData", JSON.stringify(dados));
+    alert("Salvo! Atualize a vitrine.");
   };
-  localStorage.setItem("barData", JSON.stringify(dados));
-  alert("Salvo! Atualize a vitrine.");
+  if(logo.files[0]){
+    reader.readAsDataURL(logo.files[0]);
+  }
 }
 </script>
 
