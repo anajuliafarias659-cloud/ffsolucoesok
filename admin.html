@@ -2,119 +2,80 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>FF Bar • Vitrine</title>
+<title>Admin • FF Bar</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
-  margin:0;
-  background:#000;
+  background:#111;
+  color:#fff;
   font-family:Arial,Helvetica,sans-serif;
+  padding:20px;
 }
-
-/* LAYOUT */
-.vitrine{
-  position:fixed;
-  inset:0;
-  display:flex;
-}
-
-/* LATERAL DE IMAGENS */
-.lateral{
-  width:240px;
-  background:#fff;
-  padding:10px;
-  display:grid;
-  grid-template-rows:repeat(5,1fr);
-  gap:10px;
-}
-
-.lateral img{
+h2{margin-bottom:10px}
+label{display:block;margin-top:15px}
+input, select, textarea{
   width:100%;
-  aspect-ratio:1/1;
-  object-fit:cover;
-  border-radius:8px;
+  padding:12px;
+  margin-top:6px;
+  font-size:15px;
 }
-
-/* VIDEO */
-.video{
-  flex:1;
-  background:#000;
-}
-
-iframe{
+textarea{resize:none;height:110px}
+button{
+  margin-top:20px;
   width:100%;
-  height:100%;
+  padding:14px;
+  font-size:18px;
+  background:#00c2ff;
+  color:#000;
   border:none;
+  font-weight:bold;
+  cursor:pointer;
 }
+small{opacity:.7}
 </style>
 </head>
 
 <body>
 
-<div class="vitrine">
-  <div class="lateral" id="galeria"></div>
+<h2>🎛️ Admin • Vitrine FF Bar</h2>
 
-  <div class="video">
-    <iframe
-      id="player"
-      allow="autoplay; encrypted-media"
-      allowfullscreen>
-    </iframe>
-  </div>
-</div>
+<label>Tipo de Conteúdo</label>
+<select id="tipo">
+  <option value="playlist">Playlist (músicas)</option>
+  <option value="video">Vídeo / Filme</option>
+</select>
+
+<label>ID do YouTube</label>
+<input id="youtubeId" placeholder="Ex: PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI">
+
+<label>Imagens da lateral (até 5)</label>
+<small>cole UM link por linha (imagem quadrada fica top)</small>
+<textarea id="imagens"></textarea>
+
+<button onclick="salvar()">Salvar Configuração</button>
 
 <script>
-/* =====================================
-   🔧 CONFIGURAÇÃO (MEXE SÓ AQUI)
-===================================== */
+function salvar(){
+  const imagens = imagens.value
+    .split("\n")
+    .map(l => l.trim())
+    .filter(l => l !== "")
+    .slice(0,5);
 
-// ▶️ ID DO VÍDEO ou PLAYLIST
-// 👉 vídeo único: "HJoIri7KxMs"
-// 👉 playlist: "PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI"
-const YOUTUBE_ID = "PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI";
+  const dados = {
+    tipo: tipo.value,
+    id: youtubeId.value.trim(),
+    imagens
+  };
 
-// 👉 true = playlist | false = vídeo único
-const E_PLAYLIST = true;
+  if(!dados.id){
+    alert("Cola o ID do YouTube 👀");
+    return;
+  }
 
-// 🖼️ IMAGENS DA LATERAL (até 5)
-// 👉 pode colocar link OU base64
-const IMAGENS = [
-  "https://via.placeholder.com/500",
-  "https://via.placeholder.com/500",
-  "https://via.placeholder.com/500",
-  "https://via.placeholder.com/500",
-  "https://via.placeholder.com/500"
-];
-
-/* =====================================
-   ❌ NÃO MEXE DAQUI PRA BAIXO
-===================================== */
-
-// carrega imagens
-const galeria = document.getElementById("galeria");
-IMAGENS.slice(0,5).forEach(src=>{
-  const img = document.createElement("img");
-  img.src = src;
-  galeria.appendChild(img);
-});
-
-// completa espaços vazios
-while(galeria.children.length < 5){
-  const img = document.createElement("img");
-  img.style.background = "#eee";
-  galeria.appendChild(img);
-}
-
-// carrega vídeo ou playlist
-const player = document.getElementById("player");
-
-if(E_PLAYLIST){
-  player.src =
-  `https://www.youtube.com/embed/videoseries?list=${YOUTUBE_ID}&autoplay=1&mute=1&controls=0&rel=0&playsinline=1`;
-}else{
-  player.src =
-  `https://www.youtube.com/embed/${YOUTUBE_ID}?autoplay=1&mute=1&controls=0&rel=0&playsinline=1`;
+  localStorage.setItem("ffConfig", JSON.stringify(dados));
+  alert("Salvo! Atualiza a vitrine.");
 }
 </script>
 
