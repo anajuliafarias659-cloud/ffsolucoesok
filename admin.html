@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>FF Bar • Player Final</title>
+<title>FF Bar Player</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -19,14 +19,13 @@ body{
 
 /* MENU */
 .menu{
-  width:230px;
+  width:240px;
   background:#111;
   padding:10px;
   display:flex;
   flex-direction:column;
   gap:8px;
 }
-.menu h3{margin:6px 0}
 .menu button{
   padding:12px;
   background:#00c2ff;
@@ -36,7 +35,7 @@ body{
 }
 .menu input{margin-top:6px}
 
-/* LATERAL IMAGENS */
+/* IMAGENS */
 .lateral{
   width:220px;
   background:#fff;
@@ -76,7 +75,7 @@ canvas{
 
   <!-- MENU -->
   <div class="menu">
-    <h3>🎵 Gêneros</h3>
+    <h3>🎵 Gênero</h3>
     <button onclick="setGenero('sertanejo')">Sertanejo</button>
     <button onclick="setGenero('brega')">Brega</button>
     <button onclick="setGenero('piseiro')">Piseiro</button>
@@ -87,7 +86,7 @@ canvas{
     <label>📂 Pasta de músicas</label>
     <input type="file" id="musicas" webkitdirectory multiple>
 
-    <label>🖼️ Imagens (até 5)</label>
+    <label>🖼️ Imagens</label>
     <input type="file" id="imgs" accept="image/*" multiple>
 
     <button onclick="iniciar()">▶ TOCAR</button>
@@ -99,151 +98,171 @@ canvas{
   <!-- PLAYER -->
   <div class="player">
     <h2 id="titulo">Escolha um gênero</h2>
-    <audio id="audioA" preload="auto"></audio>
-    <audio id="audioB" preload="auto"></audio>
+    <audio id="audio"></audio>
     <canvas id="visualizer"></canvas>
   </div>
 
 </div>
 
 <script>
-/* ================== BANCO (IndexedDB) ================== */
+/* ================== BANCO ================== */
 let db;
-indexedDB.open("FF_BAR_DB",1).onupgradeneeded=e=>{
-  db=e.target.result;
-  db.createObjectStore("musicas",{keyPath:"id",autoIncrement:true});
-  db.createObjectStore("imagens",{keyPath:"id",autoIncrement:true});
-};
-indexedDB.open("FF_BAR_DB",1).onsuccess=e=>db=e.target.result;
 
-/* ================== ESTADO ================== */
-let generoAtual=null;
-let lista=[];
-let index=0;
-let tocandoA=true;
+const openReq = indexedDB.open("FF_BAR_DB", 1);
+
+openReq.onupgradeneeded = e => {
+  const db = e.target.result;
+  db.createObjectStore("musicas", { keyPath:"id", autoIncrement:true });
+  db.createObjectStore("imagens", { keyPath:"id", autoIncrement:true });
+};
+
+openReq.onsuccess = e => {
+  db = e.target.result;
+  carregarImagens();
+};
 
 /* ================== IMAGENS ================== */
-const galeria=document.getElementById("galeria");
-function renderImgs(arr){
-  galeria.innerHTML="";
-  arr.slice(0,5).forEach(src=>{
-    const img=document.createElement("img");
-    img.src=src;
-    galeria.appendChild(img);
-  });
-  while(galeria.children.length<5){
-    const img=document.createElement("img");
-    img.style.background="#eee";
-    galeria.appendChild(img);
-  }
-}
-(function carregarImgs(){
-  const tx=db?.transaction("imagens","readonly");
-  if(!tx) return setTimeout(carregarImgs,300);
-  const imgs=[];
-  tx.objectStore("imagens").openCursor().onsuccess=e=>{
-    const c=e.target.result;
-    if(c){imgs.push(c.value.src);c.continue();}
-    else renderImgs(imgs);
-  };
-})();
+const galeria = document.getElementById("galeria");
 
-imgs.onchange=()=>{
-  const tx=db.transaction("imagens","readwrite");
-  const store=tx.objectStore("imagens");
-  store.clear();
-  [...imgs.files].slice(0,5).forEach(f=>{
-    const r=new FileReader();
-    r.onload=e=>store.add({src:e.target.result});
-    r.readAsDataURL(f);
-  });
-  tx.oncomplete=()=>alert("Imagens salvas");
-};
+function carregarImagens(){
+  galeria.innerHTML = "";
+  const tx = db.transaction("imagens","readonly");
+  const store = tx.objectStore("imagens");
 
-/* ================== MÚSICAS ================== */
-function setGenero(g){
-  generoAtual=g;
-  titulo.innerText="🎶 "+g.toUpperCase();
-  carregarGenero();
-}
-
-musicas.onchange=()=>{
-  if(!generoAtual) return alert("Escolhe o gênero primeiro");
-  const tx=db.transaction("musicas","readwrite");
-  const store=tx.objectStore("musicas");
-  [...musicas.files].forEach(f=>{
-    const r=new FileReader();
-    r.onload=e=>store.add({genero:generoAtual,audio:e.target.result});
-    r.readAsDataURL(f);
-  });
-  tx.oncomplete=()=>alert("Músicas adicionadas");
-};
-
-function carregarGenero(){
-  lista=[]; index=0;
-  const tx=db.transaction("musicas","readonly");
-  tx.objectStore("musicas").openCursor().onsuccess=e=>{
-    const c=e.target.result;
+  store.openCursor().onsuccess = e => {
+    const c = e.target.result;
     if(c){
-      if(c.value.genero===generoAtual) lista.push(c.value.audio);
+      const img = document.createElement("img");
+      img.src = c.value.src;
+      galeria.appendChild(img);
       c.continue();
     }
   };
 }
 
-/* ================== PLAYER SEM ATRASO ================== */
-const audioA=document.getElementById("audioA");
-const audioB=document.getElementById("audioB");
+imgs.onchange = () => {
+  const tx = db.transaction("imagens","readwrite");
+  const store = tx.objectStore("imagens");
+  store.clear();
+
+  [...imgs.files].slice(0,5).forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = e => {
+      store.add({ src: e.target.result });
+    };
+    reader.readAsDataURL(file);
+  });
+
+  tx.oncomplete = carregarImagens;
+};
+
+/* ================== MÚSICAS ================== */
+let generoAtual = null;
+let lista = [];
+let index = 0;
+
+function setGenero(g){
+  generoAtual = g;
+  titulo.innerText = "🎶 " + g.toUpperCase();
+  carregarMusicas();
+}
+
+musicas.onchange = () => {
+  if(!generoAtual){
+    alert("Escolhe o gênero primeiro");
+    return;
+  }
+
+  const tx = db.transaction("musicas","readwrite");
+  const store = tx.objectStore("musicas");
+
+  [...musicas.files].forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = e => {
+      store.add({
+        genero: generoAtual,
+        audio: e.target.result
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+
+  tx.oncomplete = carregarMusicas;
+};
+
+function carregarMusicas(){
+  lista = [];
+  const tx = db.transaction("musicas","readonly");
+  const store = tx.objectStore("musicas");
+
+  store.openCursor().onsuccess = e => {
+    const c = e.target.result;
+    if(c){
+      if(c.value.genero === generoAtual){
+        lista.push(c.value.audio);
+      }
+      c.continue();
+    }
+  };
+}
+
+/* ================== PLAYER ================== */
+const audio = document.getElementById("audio");
 
 function iniciar(){
-  if(!lista.length) return alert("Sem músicas nesse gênero");
+  if(lista.length === 0){
+    alert("Sem músicas nesse gênero");
+    return;
+  }
   tocar();
 }
 
 function tocar(){
-  const atual=tocandoA?audioA:audioB;
-  const prox=tocandoA?audioB:audioA;
-  atual.src=lista[index];
-  atual.play();
+  audio.src = lista[index];
+  audio.play();
 
-  const proxIndex=(index+1)%lista.length;
-  prox.src=lista[proxIndex];
-
-  atual.onended=()=>{
-    index=proxIndex;
-    tocandoA=!tocandoA;
+  audio.onended = () => {
+    index = (index + 1) % lista.length;
     tocar();
   };
-  iniciarVisualizer(atual);
+
+  iniciarVisualizer();
 }
 
 /* ================== VISUALIZER ================== */
-const canvas=document.getElementById("visualizer");
-const ctx=canvas.getContext("2d");
-let audioCtx,analyser,data;
+const canvas = document.getElementById("visualizer");
+const ctx = canvas.getContext("2d");
+let audioCtx, analyser, data;
 
-function iniciarVisualizer(audio){
+function iniciarVisualizer(){
   if(audioCtx) return;
-  audioCtx=new AudioContext();
-  analyser=audioCtx.createAnalyser();
-  analyser.fftSize=256;
-  data=new Uint8Array(analyser.frequencyBinCount);
-  const src=audioCtx.createMediaElementSource(audio);
+
+  audioCtx = new AudioContext();
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 256;
+  data = new Uint8Array(analyser.frequencyBinCount);
+
+  const src = audioCtx.createMediaElementSource(audio);
   src.connect(analyser);
   analyser.connect(audioCtx.destination);
+
   draw();
 }
+
 function draw(){
   requestAnimationFrame(draw);
   analyser.getByteFrequencyData(data);
-  ctx.fillStyle="#000";
+
+  ctx.fillStyle = "#000";
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  let x=0;
-  const w=canvas.width/data.length;
+
+  let x = 0;
+  const w = canvas.width / data.length;
+
   data.forEach(v=>{
-    ctx.fillStyle=`rgb(${v+80},40,40)`;
-    ctx.fillRect(x,canvas.height-v,w,v);
-    x+=w;
+    ctx.fillStyle = `rgb(${v+80},40,40)`;
+    ctx.fillRect(x, canvas.height - v, w, v);
+    x += w;
   });
 }
 </script>
