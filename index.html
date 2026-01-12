@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Bar Vitrine</title>
+<title>Vitrine Bar</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -12,56 +12,28 @@ body{
   font-family:Arial,Helvetica,sans-serif;
 }
 
+/* LAYOUT */
 .vitrine{
   position:fixed;
   inset:0;
   display:flex;
 }
 
-/* COLUNA ESQUERDA */
-.info{
-  width:260px;
+/* LATERAL DE IMAGENS */
+.lateral{
+  width:240px;
   background:#fff;
-  color:#000;
-  padding:20px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-
-.textos h1{
-  font-size:26px;
-  margin:0;
-}
-.textos h2{
-  font-size:16px;
-  margin:8px 0 14px;
-}
-.textos p{
-  font-size:14px;
-  margin:6px 0;
-}
-
-/* IMAGENS */
-.imagens{
+  padding:10px;
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:6px;
+  grid-template-rows:repeat(5,1fr);
+  gap:10px;
 }
-.imagens img{
+
+.lateral img{
   width:100%;
   aspect-ratio:1/1;
   object-fit:cover;
-  border-radius:6px;
-}
-
-/* LOGO */
-.logo{
-  text-align:center;
-}
-.logo img{
-  width:80px;
-  opacity:.85;
+  border-radius:8px;
 }
 
 /* VIDEO */
@@ -69,6 +41,7 @@ body{
   flex:1;
   background:#000;
 }
+
 iframe{
   width:100%;
   height:100%;
@@ -80,56 +53,39 @@ iframe{
 <body>
 
 <div class="vitrine">
-  <div class="info">
-    <div class="textos">
-      <h1 id="barNome"></h1>
-      <h2 id="barSub"></h2>
-      <p id="linha1"></p>
-      <p id="linha2"></p>
-      <p id="linha3"></p>
-    </div>
-
-    <div class="imagens" id="galeria"></div>
-
-    <div class="logo">
-      <img id="logoBar">
-    </div>
-  </div>
+  <div class="lateral" id="galeria"></div>
 
   <div class="video">
-    <iframe id="player" allow="autoplay; encrypted-media"></iframe>
+    <iframe
+      id="player"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
   </div>
 </div>
 
 <script>
 const dados = JSON.parse(localStorage.getItem("barData")) || {
-  nome:"BAR GENIPAPO",
-  sub:"ESPAÇO PRA TODA FAMÍLIA",
-  l1:"CERVEJA",
-  l2:"TIRA GOSTO",
-  l3:"PISCINA",
-  logo:"",
-  imagens:[],
-  video:"HJoIri7KxMs"
+  imagens: [],
+  video: "HJoIri7KxMs"
 };
 
-barNome.innerText = dados.nome;
-barSub.innerText = dados.sub;
-linha1.innerText = dados.l1;
-linha2.innerText = dados.l2;
-linha3.innerText = dados.l3;
-
-if(dados.logo){
-  logoBar.src = dados.logo;
-}
-
+// carrega imagens
 const galeria = document.getElementById("galeria");
-dados.imagens.forEach(img=>{
-  const i = document.createElement("img");
-  i.src = img;
-  galeria.appendChild(i);
+dados.imagens.forEach(src=>{
+  const img = document.createElement("img");
+  img.src = src;
+  galeria.appendChild(img);
 });
 
+// garante 5 slots (visual vitrine)
+while(galeria.children.length < 5){
+  const img = document.createElement("img");
+  img.style.background = "#eee";
+  galeria.appendChild(img);
+}
+
+// vídeo SEMPRE roda
 player.src =
 `https://www.youtube.com/embed/${dados.video}?autoplay=1&mute=1&controls=0&rel=0&playsinline=1`;
 </script>
