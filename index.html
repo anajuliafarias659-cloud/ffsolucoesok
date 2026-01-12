@@ -1,95 +1,23 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Vitrine Bar</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-body{
-  margin:0;
-  background:#000;
-  font-family:Arial,Helvetica,sans-serif;
-}
-
-/* LAYOUT */
-.vitrine{
-  position:fixed;
-  inset:0;
-  display:flex;
-}
-
-/* LATERAL DE IMAGENS */
-.lateral{
-  width:240px;
-  background:#fff;
-  padding:10px;
-  display:grid;
-  grid-template-rows:repeat(5,1fr);
-  gap:10px;
-}
-
-.lateral img{
-  width:100%;
-  aspect-ratio:1/1;
-  object-fit:cover;
-  border-radius:8px;
-}
-
-/* VIDEO */
-.video{
-  flex:1;
-  background:#000;
-}
-
-iframe{
-  width:100%;
-  height:100%;
-  border:none;
-}
-</style>
-</head>
-
-<body>
-
-<div class="vitrine">
-  <div class="lateral" id="galeria"></div>
-
-  <div class="video">
-    <iframe
-      id="player"
-      allow="autoplay; encrypted-media"
-      allowfullscreen>
-    </iframe>
-  </div>
-</div>
-
 <script>
-const dados = JSON.parse(localStorage.getItem("barData")) || {
-  imagens: [],
-  video: "HJoIri7KxMs"
+const dados = JSON.parse(localStorage.getItem("ffConfig")) || {
+  id:"PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI",
+  imagens:[]
 };
 
-// carrega imagens
+// imagens
 const galeria = document.getElementById("galeria");
 dados.imagens.forEach(src=>{
   const img = document.createElement("img");
   img.src = src;
   galeria.appendChild(img);
 });
-
-// garante 5 slots (visual vitrine)
 while(galeria.children.length < 5){
   const img = document.createElement("img");
-  img.style.background = "#eee";
+  img.style.background="#eee";
   galeria.appendChild(img);
 }
 
-// vídeo SEMPRE roda
+// player (playlist ou vídeo)
 player.src =
-player.src = `https://www.youtube.com/embed/videoseries?list=PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI&autoplay=1&mute=1&controls=0&rel=0&playsinline=1`;
-
+`https://www.youtube.com/embed/videoseries?list=${dados.id}&autoplay=1&mute=1&controls=0&rel=0&playsinline=1`;
 </script>
-
-</body>
-</html>
