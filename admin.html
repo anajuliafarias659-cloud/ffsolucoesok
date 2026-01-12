@@ -11,15 +11,11 @@ body{
   background:#000;
   font-family:Arial,Helvetica,sans-serif;
 }
-
-/* layout */
 .vitrine{
   position:fixed;
   inset:0;
   display:flex;
 }
-
-/* lateral imagens */
 .lateral{
   width:240px;
   background:#fff;
@@ -34,27 +30,24 @@ body{
   object-fit:cover;
   border-radius:8px;
 }
-
-/* player */
 .player{
   flex:1;
+  color:#fff;
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
-  flex-direction:column;
-  color:#fff;
 }
+input{margin:6px 0}
 button{
-  padding:16px 30px;
-  font-size:20px;
+  margin-top:10px;
+  padding:12px 26px;
+  font-size:18px;
   background:#00c2ff;
   border:none;
   cursor:pointer;
 }
-audio{
-  width:80%;
-  margin-top:20px;
-}
+audio{width:80%;margin-top:10px}
 </style>
 </head>
 
@@ -65,32 +58,66 @@ audio{
 
   <div class="player">
     <h2>🎶 Player Local</h2>
+
+    <label>Adicionar músicas (MP3)</label>
     <input type="file" id="musicas" accept="audio/*" multiple>
-    <button onclick="tocar()">▶ TOCAR</button>
+
+    <label>Imagens da vitrine (até 5)</label>
+    <input type="file" id="imgs" accept="image/*" multiple>
+
+    <button onclick="iniciar()">▶ TOCAR</button>
+
     <audio id="audio" controls></audio>
   </div>
 </div>
 
 <script>
-const galeria = document.getElementById("galeria");
-
-// imagens exemplo (tu pode trocar depois)
-for(let i=0;i<5;i++){
-  const img=document.createElement("img");
-  img.style.background="#eee";
-  galeria.appendChild(img);
-}
-
-let lista = [];
+/* ===== ESTADO SALVO ===== */
+let imagensSalvas = JSON.parse(localStorage.getItem("ffImgs")) || [];
+let musicasLista = [];
 let atual = 0;
 
-musicas.onchange = () => {
-  lista = [...musicas.files];
+/* ===== IMAGENS ===== */
+const galeria = document.getElementById("galeria");
+
+function renderImagens(){
+  galeria.innerHTML = "";
+  imagensSalvas.slice(0,5).forEach(src=>{
+    const img = document.createElement("img");
+    img.src = src;
+    galeria.appendChild(img);
+  });
+  while(galeria.children.length < 5){
+    const img = document.createElement("img");
+    img.style.background="#eee";
+    galeria.appendChild(img);
+  }
+}
+renderImagens();
+
+imgs.onchange = () => {
+  [...imgs.files].slice(0,5).forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      imagensSalvas.push(e.target.result);
+      imagensSalvas = imagensSalvas.slice(-5);
+      localStorage.setItem("ffImgs", JSON.stringify(imagensSalvas));
+      renderImagens();
+    };
+    reader.readAsDataURL(file);
+  });
 };
 
-function tocar(){
-  if(lista.length === 0){
-    alert("Selecione músicas");
+/* ===== MÚSICAS ===== */
+musicas.onchange = () => {
+  [...musicas.files].forEach(file=>{
+    musicasLista.push(file); // adiciona, não substitui
+  });
+};
+
+function iniciar(){
+  if(musicasLista.length === 0){
+    alert("Adicione músicas primeiro");
     return;
   }
   tocarAtual();
@@ -98,11 +125,11 @@ function tocar(){
 
 function tocarAtual(){
   const audio = document.getElementById("audio");
-  audio.src = URL.createObjectURL(lista[atual]);
+  audio.src = URL.createObjectURL(musicasLista[atual]);
   audio.play();
 
-  audio.onended = () => {
-    atual = (atual + 1) % lista.length;
+  audio.onended = ()=>{
+    atual = (atual + 1) % musicasLista.length;
     tocarAtual();
   };
 }
